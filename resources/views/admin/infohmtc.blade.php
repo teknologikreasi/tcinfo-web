@@ -21,9 +21,76 @@
 
 	<div class="row">
 		<div class="col-lg-12">
-			<div class="panel panel-default">
+			<div class="panel panel-default clearfix">
 				<div class="panel-heading">
-					<button data-toggle="modal" data-target="#tambahInfo" class="form-control btn btn-warning"><i class="fa fa-fw fa-edit"></i> Tambah Info</button>
+					<button data-toggle="modal" data-target="#tambahInfo" class="btn btn-warning"><i class="fa fa-fw fa-edit"></i> Tambah Info</button>
+					<div class="btn-group">
+						<a href="{{ route('admininfohmtc') }}" class="btn btn-default" role="button">All Tags</a>
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="" data-toggle="modal" data-target="#editTag">Edit Tag ...</a></li>
+							@foreach ($tags as $tag)
+								<li><a href="{{ route('admininfohmtc.tag', $tag->id) }}">{{ $tag->name }}</a></li>
+							@endforeach
+						</ul>
+					</div>
+				</div>
+
+				<!-- popup modal tambah tag -->
+				<div class="modal fade" id="editTag" role="dialog">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title">Edit Tag</h4>
+							</div>
+							<div class="modal-body">
+								<div class="row">
+									<div class="col-md-12">
+										<form class="form-horizontal" action="{{ route('tag.store') }}" method="POST" enctype="multipart/form-data">
+											{{ csrf_field() }}
+											<div class="row">
+												<label for="tagName" class="col-md-2 control-label">New Tag</label>
+												<div class="col-md-10">
+													<div class="input-group">
+														<input id="tagName" type="text" name="tagName" class="form-control" placeholder="Tag Name" required>
+														<span class="input-group-btn">
+															<button class="btn btn-warning">Save Tag</button>
+														</span>
+													</div>
+												</div>
+											</div>
+										</form>
+										<br>
+										<table width="100%" class="table table-striped table-bordered table-hover">
+											<thead>
+												<th>Tag</th>
+												<th>Action</th>
+											</thead>
+											<tbody>
+												@foreach ($tags as $tag)
+													<tr>
+														<td>{{ $tag->name }}</td>
+														<td>
+															<div class="row" style="text-align: center">
+																<form enctype="multipart/form-data" method="POST" action="{{ route('tag.destroy', $tag->id) }}">
+																	{{ csrf_field() }}
+																	{{ method_field('DELETE') }}
+																	<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Delete</button>
+																</form>
+															</div>
+														</td>
+													</tr>
+												@endforeach
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 
 				<!-- popup modal tambah info -->
@@ -61,12 +128,13 @@
 					</div>
 				</div> <!-- popup -->
 
-				<div class="panel-body table-responsive">
+				<div class="panel-body">
 					<table width="100%" class="table table-striped table-bordered table-hover">
 						<thead>
 							<tr>
 								<th>Caption</th>
 								<th>Image</th>
+								<th>Tags</th>
 								<th>Action</th>
 							</tr>
 						</thead>
@@ -82,13 +150,29 @@
 										@endif
 									</td>
 									<td>
+										<?php $tagged = App\Infohmtc::find($post->id)->tag; ?>
+										@foreach ($tagged as $tag)
+											<i>{{ $tag->name }}@if(!$loop->last),@endif</i>
+										@endforeach
+									</td>
+									<td>
 										<div class="row" style="text-align: center;">
-										@if ($post->status == "1")
-											<a href="{{ route('admininfohmtc.stop', $post->id) }}" class="btn btn-danger btn-xs" role="button"><i class="fa fa-pencil-square"></i> Stop</a>
-										@else
-											<a href="{{ route('admininfohmtc.start', $post->id) }}" class="btn btn-warning btn-xs" role="button"><i class="fa fa-pencil-square"></i> Start</a>
-										@endif
+											@if ($post->status == "1")
+												<a href="{{ route('admininfohmtc.stop', $post->id) }}" class="btn btn-danger btn-xs" role="button"><i class="fa fa-pencil-square"></i> Stop</a>
+											@else
+												<a href="{{ route('admininfohmtc.start', $post->id) }}" class="btn btn-warning btn-xs" role="button"><i class="fa fa-pencil-square"></i> Start</a>
+											@endif
 											<button data-toggle="modal" data-target="#editInfo{{ $post->id }}" class="btn btn-primary btn-xs"><i class="fa fa-pencil-square"></i> Edit</button>
+											<div class="btn-group">
+												<button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown">
+													Add Tag <span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu" role="menu">
+													@foreach ($tags as $tag)
+														<li><a href="{{ route('admininfohmtc.addtag', ['post_id' => $post->id, 'tag_id' => $tag->id]) }}">{{ $tag->name }}</a></li>
+													@endforeach
+												</ul>
+											</div>
 										</div>
 									</td>
 								</tr>

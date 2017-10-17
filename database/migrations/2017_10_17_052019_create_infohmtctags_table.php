@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateInfohmtcsTable extends Migration
+class CreateInfohmtctagsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateInfohmtcsTable extends Migration
      */
     public function up()
     {
-        Schema::create('infohmtcs', function (Blueprint $table) {
+        Schema::create('infohmtctags', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('caption');
-            $table->string('foto');
-            $table->integer('added_by');
-            $table->string('status', 1);
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ class CreateInfohmtcsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('infohmtcs');
+        Schema::dropIfExists('infohmtctags');
     }
 }

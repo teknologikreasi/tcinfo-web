@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Infohmtc;
 use App\Infohmtctag;
 use Session;
@@ -15,12 +16,21 @@ class AdminInfoHMTCController extends Controller
         $this->middleware('admin');
     }
 
-    public function index()
+    public function index($tag = null)
     {
-    	$pageTitle = "Info HMTC";
-        $posts = Infohmtc::all();
+        $pageTitle = "Info HMTC";
+        if ($tag == null) {
+            $posts = Infohmtc::all();
+        } else {
+            $posts = Infohmtctag::find($tag)->post;
+        }
+        $tags = Infohmtctag::all();
 
-        return view('admin.infohmtc', compact('pageTitle', 'posts'));
+        return view('admin.infohmtc', compact('pageTitle', 'posts', 'tags'));
+
+        // $post = Infohmtctag::find(1)->post;
+
+        // return $post;
     }
 
     public function store(Request $request)
@@ -134,6 +144,24 @@ class AdminInfoHMTCController extends Controller
         }
         $post->delete();
         Session::flash('success', 'Info telah dihapus!');
+
+        return redirect(route('admininfohmtc'));
+    }
+
+    public function addTag($post_id, $tag_id)
+    {
+        $post = Infohmtc::find($post_id);
+
+        if ($post->tag()->where('infohmtctag_id', $tag_id)->exists())
+        {
+            $post->tag()->detach($tag_id);
+
+            Session::flash('success', 'Tag telah di-detach!');
+        } else {
+            $post->tag()->attach($tag_id);
+
+            Session::flash('success', 'Tag telah di-attach!');
+        }
 
         return redirect(route('admininfohmtc'));
     }

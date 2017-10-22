@@ -1,5 +1,9 @@
 @extends('admin.layouts.template')
 
+@section('css')
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
+@endsection
+
 @section('content')
 	@if(Session::has('failed'))
 		<div class="alert alert-danger" role="alert">
@@ -129,7 +133,7 @@
 				</div> <!-- popup -->
 
 				<div class="panel-body">
-					<table width="100%" class="table table-striped table-bordered table-hover">
+					<table width="100%" id="table" class="table table-striped table-bordered table-hover">
 						<thead>
 							<tr>
 								<th>Caption</th>
@@ -226,4 +230,14 @@
 		</div>
 	</div>
 
+@endsection
+
+@section('js')
+	<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+
+	<script>
+		$(document).ready(function(){
+		    $('#table').DataTable();
+		});
+	</script>
 @endsection

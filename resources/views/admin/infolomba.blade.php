@@ -1,5 +1,10 @@
 @extends('admin.layouts.template')
 
+@section('css')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
+@endsection
+
 @section('content')
 	@if(Session::has('failed'))
 		<div class="alert alert-danger" role="alert">
@@ -101,7 +106,7 @@
                 </div> <!-- modal fade -->
 
                 <div class="panel-body table-responsive">
-                	<table width="100%" class="table table-striped table-bordered table-hover">
+                	<table id="table" width="100%" class="table table-striped table-bordered table-hover">
                 		<thead>
                 			<tr>
                 				<th>Nama</th>
@@ -234,4 +239,22 @@
 			</div>
 		</div>
 	</div>
+@endsection
+
+@section('js')
+    <!-- Bootstrap Date-Picker Plugin -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+
+    <script>
+        $('.datepicker').datepicker({
+            autoclose: true,
+            format: 'dd-mm-yyyy',
+            todayHighlight: true,
+        });
+
+        $(document).ready(function(){
+            $('#table').DataTable();
+        });
+    </script>
 @endsection
